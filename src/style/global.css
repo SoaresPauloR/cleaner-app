@@ -1,0 +1,27 @@
+/* styles/globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+html {
+  font-size: 62.5;
+}
+
+.bg-login {
+  background-image: url('../../public/img/login.jpg');
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100%;
+}
+
+.min-height {
+  min-height: calc(100vh - 96px - 64px);
+}
