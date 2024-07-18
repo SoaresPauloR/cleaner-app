@@ -1,12 +1,12 @@
 import Layout from '@/components/Layout';
 import React from 'react';
 
-function Calendar() {
+function Profile() {
   return (
-    <Layout activePage="calendar">
+    <Layout activePage="profile">
       <></>
     </Layout>
   );
 }
 
-export default Calendar;
+export default Profile;

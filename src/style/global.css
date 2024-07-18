@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Dancing+Script:wght@400..700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -15,6 +17,10 @@ html {
   font-size: 62.5;
 }
 
+body {
+  @apply bg-gray-300;
+}
+
 .bg-login {
   background-image: url('../../public/img/login.jpg');
   background-repeat: no-repeat;
@@ -24,4 +30,20 @@ html {
 
 .min-height {
   min-height: calc(100vh - 96px - 64px);
+}
+
+.logo {
+  font-family: 'Dancing Script', cursive;
+}
+
+.nav-link {
+  @apply p-2 w-full flex text-center gap-3 rounded-lg;
+}
+
+.nav-link.active {
+  @apply bg-gray-300;
+}
+
+.nav-link:hover {
+  background: rgba(0, 0, 0, 0.2);
 }

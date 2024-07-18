@@ -7,12 +7,16 @@ import Section from '@/components/Section';
 import { MainProps } from '@/types/ MainProps';
 import LoginRequired from './LoginRequired';
 
-function Layout({ children }: MainProps) {
+type TypeLayout = {
+  activePage: 'home' | 'calendar' | 'profile';
+};
+
+function Layout({ children, activePage }: MainProps & TypeLayout) {
   return (
     <div className="flex">
       <LoginRequired />
 
-      <Aside className="w-80" />
+      <Aside className="w-80" activePage={activePage} />
       <Main className="pl-80">
         <>
           <Header />

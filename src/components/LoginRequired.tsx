@@ -1,6 +1,8 @@
+'use client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import Loading from './Loading';
 
 const LoginRequired = () => {
   const { status } = useSession();
@@ -11,12 +13,7 @@ const LoginRequired = () => {
     if (status === 'unauthenticated') router.push('/login');
   }, [status, router]);
 
-  if (status === 'loading')
-    return (
-      <div className="z-10 absolute top-0 left-0 w-full h-full bg-gray-700 bg-opacity-50 flex items-center justify-center text-2xl text-white font-bold">
-        Carregando...
-      </div>
-    );
+  if (status === 'loading') return <Loading />;
 
   return <></>;
 };

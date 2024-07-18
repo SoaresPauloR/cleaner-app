@@ -2,6 +2,7 @@
 
 'use client';
 
+import Loading from '@/components/Loading';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -11,8 +12,15 @@ const LoginPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'authenticated') router.push('/');
+    if (status === 'authenticated') {
+      router.push('/');
+      return;
+    }
   }, [status, router]);
+
+  if (status !== 'unauthenticated') {
+    return <Loading />;
+  }
 
   return (
     <div className="w-full h-[100vh] bg-login flex items-center justify-center">
@@ -28,7 +36,6 @@ const LoginPage = () => {
         <button
           onClick={() => signIn('google')}
           className="gsi-material-button bg-white border border-gray-400 rounded-lg shadow-sm px-4 py-2 text-gray-700 hover:bg-gray-100 focus:outline-none focus:border-blue-500 focus:shadow-outline-blue disabled:bg-gray-300 disabled:border-gray-400 disabled:text-gray-500 disabled:cursor-default"
-          disabled={status === 'loading'}
         >
           <div className="gsi-material-button-state"></div>
           <div className="flex items-center justify-between">

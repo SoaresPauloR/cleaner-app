@@ -6,8 +6,8 @@ import React from 'react';
 
 const App = () => {
   return (
-    <Layout>
-      <>Layout</>
+    <Layout activePage="home">
+      <></>
     </Layout>
   );
 };
