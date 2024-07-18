@@ -3,7 +3,7 @@ import { Client, Address } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const client = await prisma.client.findMany();
+  const client = await prisma.client.findMany({ include: { address: true } });
 
   return NextResponse.json(client);
 }
@@ -13,13 +13,6 @@ export async function POST(req: Request) {
   const { name, number } = data as Client;
   const address = data.address as Address;
 
-  // const newAddress = await prisma.address.create({
-  //   data: {
-  //     ...address,
-  //   },
-  // });
-
-  // Cria o cliente associado ao endereço criado
   const newClient = await prisma.client.create({
     data: {
       name: name,
@@ -33,7 +26,7 @@ export async function POST(req: Request) {
       },
     },
     include: {
-      address: true, // Inclui o endereço criado na resposta
+      address: true,
     },
   });
 

@@ -4,26 +4,26 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: ParamsType) {
   const id = +params.id;
-  const client = await prisma.client.findUnique({ where: { id } });
+  const users = await prisma.users.findUnique({ where: { id } });
 
-  return NextResponse.json(client);
+  return NextResponse.json(users);
 }
 
 export async function DELETE(req: Request, { params }: ParamsType) {
   const id = +params.id;
 
-  const user = await prisma.client.delete({ where: { id } });
+  const user = await prisma.users.delete({ where: { id } });
 
   return NextResponse.json(user);
 }
 
 export async function PUT(req: Request, { params }: ParamsType) {
   const id = +params.id;
-  const { name } = await req.json();
+  const { name, email, number, type, id_google } = await req.json();
 
-  const user = await prisma.client.update({
+  const user = await prisma.users.update({
     where: { id },
-    data: { name },
+    data: { name, email, number, type, id_google },
   });
 
   return NextResponse.json(user);
