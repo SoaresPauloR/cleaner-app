@@ -1,10 +1,22 @@
+import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  return NextResponse.json({ cleaners: 'Paulo' });
+  const cleaners = await prisma.users.findMany({ where: { type: 'Cleaner' } });
+
+  return NextResponse.json(cleaners);
 }
 
-export async function POST(request: Request) {
-  const { name, route } = await request.json();
-  return NextResponse.json({ message: 'Cleaner added', name, route });
+export async function POST(req: Request) {
+  // const { name, email, number, type, id_google } = await req.json();
+  // const newUser = await prisma.users.create({
+  //   data: {
+  //     name,
+  //     email,
+  //     number,
+  //     type,
+  //     id_google,
+  //   },
+  // });
+  // return NextResponse.json(newUser);
 }

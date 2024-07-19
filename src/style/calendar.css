@@ -1,0 +1,50 @@
+.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack {
+  width: calc(100vw - 320px - 320px);
+  max-height: calc(100vh - 96px - 40px);
+  @apply bg-white p-5 rounded-3xl;
+}
+
+.fc-scrollgrid.fc-scrollgrid-liquid {
+  @apply rounded-2xl border;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  @apply border;
+}
+
+.fc-scrollgrid-section.fc-scrollgrid-section-body.fc-scrollgrid-section-liquid
+  > td {
+  border: 0px;
+}
+
+.fc-scrollgrid-section.fc-scrollgrid-section-header > th {
+  border: 0px;
+}
+.fc-dayGridMonth-button.fc-button.fc-button-primary,
+.fc-timeGridDay-button.fc-button.fc-button-primary,
+.fc-prev-button.fc-button.fc-button-primary,
+.fc-today-button.fc-button.fc-button-primary,
+.fc-next-button.fc-button.fc-button-primary {
+  @apply rounded-xl bg-black h-10;
+}
+
+.fc-button-active {
+  @apply bg-gray-800;
+}
+
+.fc-timeGridWeek-button.fc-button.fc-button-primary {
+  @apply bg-black;
+}
+
+.input-content {
+  @apply flex flex-col gap-2;
+}
+
+.input-content-row {
+  @apply flex flex-row gap-2;
+}
+
+.input {
+  @apply w-full p-2 rounded-lg border bg-transparent;
+}

@@ -47,3 +47,27 @@ body {
 .nav-link:hover {
   background: rgba(0, 0, 0, 0.2);
 }
+
+.transition-1 {
+  transition: all 100ms ease-in-out;
+}
+
+.transition-2 {
+  transition: all 200ms ease-in-out;
+}
+
+.transition-3 {
+  transition: all 300ms ease-in-out;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
