@@ -14,8 +14,6 @@ const CreateEvent = ({
   setModalIsOpen,
   selectInfo,
 }: CreateEventProps): JSX.Element => {
-  if (!modalIsOpen) return <div></div>;
-
   const basePost = {
     id: 0,
     id_client: 0,
@@ -35,9 +33,30 @@ const CreateEvent = ({
 
   const changeModal = () => setModalIsOpen(!modalIsOpen);
 
-  const saveEvent = () => {
-    console.log(post);
-    changeModal();
+  const convertDate = (date: string, hour: string): string => {
+    return `${date}T${hour}:00.000Z`;
+  };
+
+  const saveEvent = async () => {
+    const newPost = post;
+
+    if (!selectInfo) return;
+
+    console.log(selectInfo);
+
+    newPost.date = convertDate(selectInfo.startStr, newPost.date);
+    newPost.how_long = convertDate(selectInfo.startStr, newPost.how_long);
+
+    const rawResponse = await fetch('api/events', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newPost),
+    });
+
+    if (rawResponse.ok) changeModal();
   };
 
   useEffect(() => {
@@ -60,6 +79,8 @@ const CreateEvent = ({
     getClients();
     getCleaners();
   }, []);
+
+  if (!modalIsOpen) return <></>;
 
   return (
     <div className="z-20 absolute bg-black bg-opacity-40 w-full h-full left-0 top-0 flex items-center justify-center">

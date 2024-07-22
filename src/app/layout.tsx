@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] });
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link id="favicon" rel="icon" href="./img/produtos.png" />
+      </head>
       <body className={inter.className}>
         <SessionProvider>{children}</SessionProvider>
       </body>
