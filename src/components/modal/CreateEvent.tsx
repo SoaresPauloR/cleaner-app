@@ -27,11 +27,11 @@ const CreateEvent = ({
     id_client: 0,
     id_cleaner: 0,
     more_cleaner: '',
-    date: selectInfo.startStr + 'T08:00',
-    how_long: selectInfo.endStr + 'T08:00',
+    date_start: selectInfo.startStr + 'T08:00',
+    date_finish: selectInfo.startStr + 'T08:00',
     more: '',
     value: 0,
-    value_type: 'perHouer',
+    value_type: 'perHour',
     pay_method: 'clientPay',
   };
 
@@ -51,8 +51,8 @@ const CreateEvent = ({
 
     if (!selectInfo) return;
 
-    newPost.date = convertDate(post.date);
-    newPost.how_long = convertDate(post.how_long);
+    newPost.date_start = convertDate(post.date_start);
+    newPost.date_finish = convertDate(post.date_finish);
 
     const rawResponse = await fetch('api/events', {
       method: 'POST',
@@ -70,8 +70,8 @@ const CreateEvent = ({
       {
         id: responseData.id.toString(),
         title: responseData.client.name,
-        start: responseData.date.toString(),
-        end: responseData.how_long.toString(),
+        start: responseData.date_start.toString(),
+        end: responseData.date_finish.toString(),
       },
     ]);
 
@@ -98,6 +98,22 @@ const CreateEvent = ({
     getClients();
     getCleaners();
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setModalIsOpen(!modalIsOpen);
+      }
+    };
+
+    if (modalIsOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [modalIsOpen, setModalIsOpen]);
 
   if (!modalIsOpen) return <></>;
 
@@ -187,13 +203,13 @@ const CreateEvent = ({
               <div className="input-content">
                 <label htmlFor="">Start Time</label>
                 <input
-                  value={post.date}
+                  value={post.date_start}
                   type="datetime-local"
                   onChange={(e) => {
-                    const date = e.target.value;
+                    const date_start = e.target.value;
                     setPost((prevPost) => ({
                       ...prevPost,
-                      date,
+                      date_start,
                     }));
                   }}
                   className="input"
@@ -202,12 +218,12 @@ const CreateEvent = ({
               <div className="input-content">
                 <label htmlFor="">Finish Time</label>
                 <input
-                  value={post.how_long}
+                  value={post.date_finish}
                   onChange={(e) => {
-                    const how_long = e.target.value;
+                    const date_finish = e.target.value;
                     setPost((prevPost) => ({
                       ...prevPost,
-                      how_long,
+                      date_finish,
                     }));
                   }}
                   type="datetime-local"
@@ -245,7 +261,7 @@ const CreateEvent = ({
                   }}
                   className="input"
                 >
-                  <option value="perHouer">Per Hour</option>
+                  <option value="perHour">Per Hour</option>
                   <option value="total">Total Value</option>
                 </select>
               </div>

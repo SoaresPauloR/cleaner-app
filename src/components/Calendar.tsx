@@ -36,7 +36,7 @@ export function Calendar() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/events');
+        const res = await fetch('api/events');
         const data = (await res.json()) as EventCompost[];
         const events = treatData(data);
         setEvents(events);
@@ -71,14 +71,16 @@ export function Calendar() {
           events={events}
         />
       )}
-      <CreateEvent
-        modalIsOpen={modalIsOpen}
-        setModalIsOpen={setModalIsOpen}
-        selectInfo={selectInfo}
-        setSelectInfo={setSelectInfo}
-        setEvents={setEvents}
-        events={events}
-      />
+      {modalIsOpen && (
+        <CreateEvent
+          modalIsOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
+          selectInfo={selectInfo}
+          setSelectInfo={setSelectInfo}
+          setEvents={setEvents}
+          events={events}
+        />
+      )}
     </>
   );
 }
@@ -87,7 +89,7 @@ function treatData(data: EventCompost[]): EventCalendar[] {
   return data.map((e) => ({
     id: e.id.toString(),
     title: e.client.name,
-    start: new Date(e.date).toISOString(),
-    end: new Date(e.how_long).toISOString(),
+    start: new Date(e.date_start).toISOString(),
+    end: new Date(e.date_finish).toISOString(),
   }));
 }
