@@ -37,5 +37,10 @@ export async function POST(req: Request) {
     },
   });
 
-  return NextResponse.json(newEvents);
+  const events = await prisma.events.findUnique({
+    where: { id: newEvents.id },
+    include: { cleaner: true, client: true },
+  });
+
+  return NextResponse.json(events);
 }

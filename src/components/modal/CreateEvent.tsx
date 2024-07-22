@@ -1,4 +1,6 @@
-import { DateSelectArg } from '@fullcalendar/core/index.js';
+import { EventCalendar } from '@/types/EventCalendar';
+import { EventCompost } from '@/types/EventCompost';
+import { DateSelectArg } from '@fullcalendar/core';
 import { Client, Users } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
 
@@ -7,20 +9,26 @@ type CreateEventProps = {
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectInfo: DateSelectArg | null;
   setSelectInfo?: React.Dispatch<React.SetStateAction<DateSelectArg | null>>;
+  setEvents: React.Dispatch<React.SetStateAction<EventCalendar[]>>;
+  events: EventCalendar[];
 };
 
 const CreateEvent = ({
   modalIsOpen,
   setModalIsOpen,
   selectInfo,
+  setEvents,
+  events,
 }: CreateEventProps): JSX.Element => {
+  if (!selectInfo) return <></>;
+
   const basePost = {
     id: 0,
     id_client: 0,
     id_cleaner: 0,
     more_cleaner: '',
-    date: '2023-06-01T00:00:00.000Z',
-    how_long: '2023-06-01T00:00:00.000Z',
+    date: selectInfo.startStr + 'T08:00',
+    how_long: selectInfo.endStr + 'T08:00',
     more: '',
     value: 0,
     value_type: 'perHouer',
@@ -33,8 +41,9 @@ const CreateEvent = ({
 
   const changeModal = () => setModalIsOpen(!modalIsOpen);
 
-  const convertDate = (date: string, hour: string): string => {
-    return `${date}T${hour}:00.000Z`;
+  const convertDate = (date: string): string => {
+    const localDate = new Date(date).toISOString();
+    return localDate;
   };
 
   const saveEvent = async () => {
@@ -42,10 +51,8 @@ const CreateEvent = ({
 
     if (!selectInfo) return;
 
-    console.log(selectInfo);
-
-    newPost.date = convertDate(selectInfo.startStr, newPost.date);
-    newPost.how_long = convertDate(selectInfo.startStr, newPost.how_long);
+    newPost.date = convertDate(post.date);
+    newPost.how_long = convertDate(post.how_long);
 
     const rawResponse = await fetch('api/events', {
       method: 'POST',
@@ -55,6 +62,18 @@ const CreateEvent = ({
       },
       body: JSON.stringify(newPost),
     });
+
+    const responseData = (await rawResponse.json()) as EventCompost;
+
+    setEvents([
+      ...events,
+      {
+        id: responseData.id.toString(),
+        title: responseData.client.name,
+        start: responseData.date.toString(),
+        end: responseData.how_long.toString(),
+      },
+    ]);
 
     if (rawResponse.ok) changeModal();
   };
@@ -84,64 +103,66 @@ const CreateEvent = ({
 
   return (
     <div className="z-20 absolute bg-black bg-opacity-40 w-full h-full left-0 top-0 flex items-center justify-center">
-      <div className="bg-white p-5 rounded-xl w-96 flex flex-col gap-4">
+      <div className="bg-white p-5 rounded-xl w-[600px] flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold">Create Events</h1>
           <div>{selectInfo?.startStr}</div>
         </div>
         <div>
           <form className="flex flex-col gap-2" action="">
-            <div className="input-content">
-              <label htmlFor="">Client</label>
-              <select
-                value={post.id_client}
-                onChange={(e) => {
-                  const id_client = parseInt(e.target.value, 10);
-                  setPost((prevPost) => ({
-                    ...prevPost,
-                    id_client,
-                  }));
-                }}
-                className="input"
-              >
-                <option hidden value="0">
-                  Select a client
-                </option>
-                {clients.map(
-                  (e) =>
-                    e && (
-                      <option key={e.id} value={e.id}>
-                        {e.name}
-                      </option>
-                    ),
-                )}
-              </select>
-            </div>
-            <div className="input-content">
-              <label htmlFor="">Cleaner</label>
-              <select
-                value={post.id_cleaner}
-                onChange={(e) => {
-                  const id_cleaner = parseInt(e.target.value, 10);
-                  setPost((prevPost) => ({
-                    ...prevPost,
-                    id_cleaner,
-                  }));
-                }}
-                className="input"
-              >
-                <option hidden value="0">
-                  Select a cleaner
-                </option>
-                {cleaners.map(
-                  (e) =>
-                    e && (
-                      <option value={e.id} key={e.id}>
-                        {e.name}
-                      </option>
-                    ),
-                )}
-              </select>
+            <div className="input-content-row">
+              <div className="input-content">
+                <label htmlFor="">Client</label>
+                <select
+                  value={post.id_client}
+                  onChange={(e) => {
+                    const id_client = parseInt(e.target.value, 10);
+                    setPost((prevPost) => ({
+                      ...prevPost,
+                      id_client,
+                    }));
+                  }}
+                  className="input"
+                >
+                  <option hidden value="0">
+                    Select a client
+                  </option>
+                  {clients.map(
+                    (e) =>
+                      e && (
+                        <option key={e.id} value={e.id}>
+                          {e.name}
+                        </option>
+                      ),
+                  )}
+                </select>
+              </div>
+              <div className="input-content">
+                <label htmlFor="">Cleaner</label>
+                <select
+                  value={post.id_cleaner}
+                  onChange={(e) => {
+                    const id_cleaner = parseInt(e.target.value, 10);
+                    setPost((prevPost) => ({
+                      ...prevPost,
+                      id_cleaner,
+                    }));
+                  }}
+                  className="input"
+                >
+                  <option hidden value="0">
+                    Select a cleaner
+                  </option>
+                  {cleaners.map(
+                    (e) =>
+                      e && (
+                        <option value={e.id} key={e.id}>
+                          {e.name}
+                        </option>
+                      ),
+                  )}
+                </select>
+              </div>
             </div>
             <div className="input-content">
               <label htmlFor="">More Cleaner</label>
@@ -163,11 +184,11 @@ const CreateEvent = ({
               </select>
             </div>
             <div className="input-content-row">
-              <div className="input-content w-full">
+              <div className="input-content">
                 <label htmlFor="">Start Time</label>
                 <input
                   value={post.date}
-                  type="time"
+                  type="datetime-local"
                   onChange={(e) => {
                     const date = e.target.value;
                     setPost((prevPost) => ({
@@ -178,7 +199,7 @@ const CreateEvent = ({
                   className="input"
                 />
               </div>
-              <div className="input-content w-full">
+              <div className="input-content">
                 <label htmlFor="">Finish Time</label>
                 <input
                   value={post.how_long}
@@ -189,43 +210,45 @@ const CreateEvent = ({
                       how_long,
                     }));
                   }}
-                  type="time"
+                  type="datetime-local"
                   className="input"
                 />
               </div>
             </div>
-            <div className="input-content">
-              <label htmlFor="">Value</label>
-              <input
-                value={post.value}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value, 10);
-                  setPost((prevPost) => ({
-                    ...prevPost,
-                    value,
-                  }));
-                }}
-                type="number"
-                step="0.01"
-                className="input"
-              />
-            </div>
-            <div className="input-content">
-              <label htmlFor="">Value Type</label>
-              <select
-                value={post.value_type}
-                onChange={(e) => {
-                  const value_type = e.target.value;
-                  setPost((prevPost) => ({
-                    ...prevPost,
-                    value_type,
-                  }));
-                }}
-                className="input"
-              >
-                <option value="perHouer">Per Hour</option>
-                <option value="total">Total Value</option>
-              </select>
+            <div className="input-content-row">
+              <div className="input-content">
+                <label htmlFor="">Value</label>
+                <input
+                  value={post.value}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value, 10);
+                    setPost((prevPost) => ({
+                      ...prevPost,
+                      value,
+                    }));
+                  }}
+                  type="number"
+                  step="0.01"
+                  className="input"
+                />
+              </div>
+              <div className="input-content">
+                <label htmlFor="">Value Type</label>
+                <select
+                  value={post.value_type}
+                  onChange={(e) => {
+                    const value_type = e.target.value;
+                    setPost((prevPost) => ({
+                      ...prevPost,
+                      value_type,
+                    }));
+                  }}
+                  className="input"
+                >
+                  <option value="perHouer">Per Hour</option>
+                  <option value="total">Total Value</option>
+                </select>
+              </div>
             </div>
             <div className="input-content">
               <label htmlFor="">Pay Method</label>

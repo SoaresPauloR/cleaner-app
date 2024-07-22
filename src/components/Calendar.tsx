@@ -8,20 +8,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import '@/style/calendar.css';
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import CreateEvent from './modal/CreateEvent';
-import { Client, Events, Users } from '@prisma/client';
 import Loading from './Loading';
-
-type EventCompost = Events & {
-  client: Client;
-  cleaner: Users;
-};
-
-type EventCalendar = {
-  id: string;
-  title: string;
-  start: string;
-  end: string;
-};
+import { EventCalendar } from '@/types/EventCalendar';
+import { EventCompost } from '@/types/EventCompost';
 
 export function Calendar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -87,6 +76,8 @@ export function Calendar() {
         setModalIsOpen={setModalIsOpen}
         selectInfo={selectInfo}
         setSelectInfo={setSelectInfo}
+        setEvents={setEvents}
+        events={events}
       />
     </>
   );
