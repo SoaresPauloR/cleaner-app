@@ -2,11 +2,11 @@ import { EventCalendar } from '@/types/EventCalendar';
 import { EventCompost } from '@/types/EventCompost';
 import { DateSelectArg } from '@fullcalendar/core';
 import React, { useEffect, useState } from 'react';
-import SubmitButton from './buttons/SubmitButton';
-import CancelButton from './buttons/CancelButton';
+import SubmitButton from '../../buttons/SubmitButton';
+import CancelButton from '../../buttons/CancelButton';
 import FormEvents from './FormEvents';
 import { EventsPost } from '@/types/EventsPost';
-import Modal from './modal/Modal';
+import Modal from '../../modal/Modal';
 
 type CreateEventProps = {
   modalIsOpen: boolean;
@@ -96,11 +96,8 @@ const CreateEvent = ({
     };
   }, [modalIsOpen, setModalIsOpen]);
 
-  if (!modalIsOpen) return <></>;
-
   const header = (
     <>
-      {' '}
       <h1 className="text-xl font-bold">Create Events</h1>
       <div>{selectInfo?.startStr}</div>
     </>

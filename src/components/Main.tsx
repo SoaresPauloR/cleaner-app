@@ -1,4 +1,4 @@
-import { MainProps } from '@/types/ MainProps';
+import { MainProps } from '@/types/MainProps';
 import React from 'react';
 
 function Main({ children, className }: MainProps): JSX.Element {

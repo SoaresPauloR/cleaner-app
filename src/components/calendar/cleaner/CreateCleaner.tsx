@@ -1,17 +1,17 @@
 import React from 'react';
-import Modal from './modal/Modal';
-import CancelButton from './buttons/CancelButton';
-import SubmitButton from './buttons/SubmitButton';
+import Modal from '../../modal/Modal';
+import CancelButton from '../../buttons/CancelButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 type Props = {
   modalIsOpen: boolean;
   setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function CreateCleaner({ modalIsOpen, setModalIsOpen }: Props) {
+function CreateClient({ modalIsOpen, setModalIsOpen }: Props) {
   const header = (
     <>
-      <h1 className="text-xl font-bold">Create Client</h1>
+      <h1 className="text-xl font-bold">Create Cleaner</h1>
     </>
   );
 
@@ -42,4 +42,4 @@ function CreateCleaner({ modalIsOpen, setModalIsOpen }: Props) {
   );
 }
 
-export default CreateCleaner;
+export default CreateClient;

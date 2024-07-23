@@ -2,8 +2,8 @@
 
 import { EventsPost } from '@/types/EventsPost';
 import React from 'react';
-import CleanerInput from './CleanerInput';
-import ClientInput from './ClientInput';
+import CleanerInput from '../cleaner/CleanerInput';
+import ClientInput from '../client/ClientInput';
 
 type FormEventsProps = {
   post: EventsPost;

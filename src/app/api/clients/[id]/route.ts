@@ -1,6 +1,5 @@
 import prisma from '@/lib/prisma';
 import { ParamsType } from '@/types/ParamsType';
-import { Client } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request, { params }: ParamsType) {
@@ -20,7 +19,7 @@ export async function DELETE(req: Request, { params }: ParamsType) {
     include: { address: true },
   });
 
-  return NextResponse.json({ client: 'Not implemented' });
+  return NextResponse.json({ error: 'Not implemented', client: client });
 }
 
 export async function PUT(req: Request, { params }: ParamsType) {
@@ -32,5 +31,5 @@ export async function PUT(req: Request, { params }: ParamsType) {
   //   data: { ...data },
   // });
 
-  return NextResponse.json({ client: 'Not implemented' });
+  return NextResponse.json({ client: 'Not implemented', req, params });
 }

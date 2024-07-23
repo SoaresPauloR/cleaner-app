@@ -1,7 +1,7 @@
 'use client';
 import Layout from '@/components/Layout';
 import React from 'react';
-import { Calendar } from '@/components/Calendar';
+import { Calendar } from '@/components/calendar/Calendar';
 
 function CalendarPage() {
   return (

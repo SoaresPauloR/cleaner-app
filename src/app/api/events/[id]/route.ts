@@ -13,9 +13,9 @@ export async function GET(req: Request, { params }: ParamsType) {
 }
 
 export async function DELETE(req: Request, { params }: ParamsType) {
-  return NextResponse.json({ events: 'Not implemented' });
+  return NextResponse.json({ events: 'Not implemented', req, params });
 }
 
 export async function PUT(req: Request, { params }: ParamsType) {
-  return NextResponse.json({ events: 'Not implemented' });
+  return NextResponse.json({ events: 'Not implemented', req, params });
 }

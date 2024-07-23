@@ -1,7 +1,7 @@
 import { PostProps } from '@/types/PostProps';
 import { Users } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
-import PlusButton from './buttons/PlusButton';
+import PlusButton from '../../buttons/PlusButton';
 import CreateCleaner from './CreateCleaner';
 
 function CleanerInput({ post, setPost }: PostProps) {

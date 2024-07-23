@@ -3,8 +3,8 @@
 import { PostProps } from '@/types/PostProps';
 import { Client } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
-import PlusButton from './buttons/PlusButton';
-import CreateClient from './CreateCleaner';
+import PlusButton from '../../buttons/PlusButton';
+import CreateClient from '../cleaner/CreateCleaner';
 
 function ClientInput({ post, setPost }: PostProps) {
   const [clients, setClients] = useState<Array<Client>>([]);

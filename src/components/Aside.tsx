@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { MainProps } from '@/types/ MainProps';
+import { MainProps } from '@/types/MainProps';
 import Link from 'next/link';
 
 import { FaHome } from 'react-icons/fa';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaCalendarDay } from 'react-icons/fa';
-import LogoutButton from './LogoutButton';
+import LogoutButton from './login/LogoutButton';
 
 type AsideProps = {
   activePage: 'home' | 'calendar' | 'profile';

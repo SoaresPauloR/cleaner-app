@@ -18,5 +18,5 @@ export async function POST(req: Request) {
   //     id_google,
   //   },
   // });
-  // return NextResponse.json(newUser);
+  return NextResponse.json(req);
 }
