@@ -32,6 +32,7 @@ function FormClient({ post, setPost }: FormCleanerProp) {
         <div className="input-content">
           <label htmlFor="name">Name</label>
           <input
+            placeholder="Will Taylor..."
             type="text"
             className="input"
             value={post.name}
@@ -42,6 +43,7 @@ function FormClient({ post, setPost }: FormCleanerProp) {
         <div className="input-content">
           <label htmlFor="number">Phone number</label>
           <input
+            placeholder="9876 543210"
             type="text"
             className="input"
             value={post.number}
@@ -57,6 +59,7 @@ function FormClient({ post, setPost }: FormCleanerProp) {
         <div className="input-content">
           <label htmlFor="postcode">Postcode</label>
           <input
+            placeholder="SE1 7PB"
             type="text"
             className="input"
             value={post.address.postcode}
@@ -77,6 +80,7 @@ function FormClient({ post, setPost }: FormCleanerProp) {
         <div className="input-content">
           <label htmlFor="street">Street</label>
           <input
+            placeholder="Belvedere Road"
             type="text"
             className="input"
             value={post.address.street}

@@ -35,8 +35,8 @@ const CreateEvent = ({
     date_finish: selectInfo.startStr + 'T08:00',
     more: '',
     value: 0,
-    value_type: 'perHour',
-    pay_method: 'clientPay',
+    value_type: '0',
+    pay_method: '0',
   } as EventsPost;
 
   const [post, setPost] = useState(basePost);

@@ -22,6 +22,7 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
       <div className="input-content">
         <label htmlFor="name">Name</label>
         <input
+          placeholder="Amanda..."
           type="text"
           className="input"
           value={post.name}
@@ -32,6 +33,7 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
       <div className="input-content">
         <label htmlFor="email">Email</label>
         <input
+          placeholder="email@email.com"
           type="email"
           className="input"
           value={post.email}
@@ -42,6 +44,7 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
       <div className="input-content">
         <label htmlFor="number">Phone number</label>
         <input
+          placeholder="9876 543210"
           type="text"
           className="input"
           value={post.number}

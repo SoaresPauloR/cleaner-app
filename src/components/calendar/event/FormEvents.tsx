@@ -4,6 +4,7 @@ import { EventsPost } from '@/types/EventsPost';
 import React from 'react';
 import CleanerInput from '../cleaner/CleanerInput';
 import ClientInput from '../client/ClientInput';
+import { formatValue, removeStr } from '@/utils/formatValues';
 
 type FormEventsProps = {
   post: EventsPost;
@@ -56,6 +57,7 @@ function FormEvents({ post, setPost }: FormEventsProps) {
       <div className="input-content">
         <label htmlFor="">More Information</label>
         <input
+          placeholder="No clean the bedroom"
           type="text"
           value={post.more}
           onChange={(e) => {
@@ -73,22 +75,23 @@ function FormEvents({ post, setPost }: FormEventsProps) {
         <div className="input-content">
           <label htmlFor="">Value</label>
           <input
-            value={post.value}
+            value={formatValue(post.value)}
             onChange={(e) => {
-              const value = parseInt(e.target.value, 10);
+              const value = removeStr(e.target.value);
               setPost((prevPost) => ({
                 ...prevPost,
                 value,
               }));
             }}
-            type="number"
+            type="text"
             step="0.01"
             className="input"
           />
         </div>
         <div className="input-content">
-          <label htmlFor="">Value Type</label>
+          <label htmlFor="">Pay method</label>
           <select
+            defaultValue="0"
             value={post.value_type}
             onChange={(e) => {
               const value_type = e.target.value;
@@ -99,13 +102,16 @@ function FormEvents({ post, setPost }: FormEventsProps) {
             }}
             className="input"
           >
+            <option hidden disabled value="0">
+              Select the pay method
+            </option>
             <option value="perHour">Per Hour</option>
             <option value="total">Total Value</option>
           </select>
         </div>
       </div>
       <div className="input-content">
-        <label htmlFor="">Pay Method</label>
+        <label htmlFor="">Who pay</label>
         <select
           value={post.pay_method}
           onChange={(e) => {
@@ -117,6 +123,9 @@ function FormEvents({ post, setPost }: FormEventsProps) {
           }}
           className="input"
         >
+          <option hidden disabled value="0">
+            Select who will pay
+          </option>
           <option value="clientPay">Client Pay</option>
           <option value="adminPay">Enterprise Pay</option>
         </select>
