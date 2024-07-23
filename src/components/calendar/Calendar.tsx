@@ -10,7 +10,7 @@ import { DateSelectArg, EventClickArg } from '@fullcalendar/core';
 import CreateEvent from './event/CreateEvent';
 import Loading from '../Loading';
 import { EventCalendar } from '@/types/EventCalendar';
-import { EventCompost } from '@/types/EventCompost';
+import { EventPopulate } from '@/types/EventPopulate';
 
 export function Calendar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -37,7 +37,7 @@ export function Calendar() {
     const getData = async () => {
       try {
         const res = await fetch('api/events');
-        const data = (await res.json()) as EventCompost[];
+        const data = (await res.json()) as EventPopulate[];
         const events = treatData(data);
         setEvents(events);
       } catch (error) {
@@ -85,7 +85,7 @@ export function Calendar() {
   );
 }
 
-function treatData(data: EventCompost[]): EventCalendar[] {
+function treatData(data: EventPopulate[]): EventCalendar[] {
   return data.map((e) => ({
     id: e.id.toString(),
     title: e.client.name,

@@ -4,11 +4,13 @@ import { PostProps } from '@/types/PostProps';
 import { Client } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
 import PlusButton from '../../buttons/PlusButton';
-import CreateClient from '../cleaner/CreateCleaner';
+import CreateClient from '../client/CreateClient';
 
 function ClientInput({ post, setPost }: PostProps) {
   const [clients, setClients] = useState<Array<Client>>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const changeModal = () => setModalIsOpen(!modalIsOpen);
 
   useEffect(() => {
     const getClients = async () => {
@@ -26,7 +28,7 @@ function ClientInput({ post, setPost }: PostProps) {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    setModalIsOpen(!modalIsOpen);
+    changeModal();
   };
 
   return (
@@ -61,8 +63,9 @@ function ClientInput({ post, setPost }: PostProps) {
 
       {modalIsOpen && (
         <CreateClient
-          modalIsOpen={modalIsOpen}
-          setModalIsOpen={setModalIsOpen}
+          changeModal={changeModal}
+          clients={clients}
+          setClients={setClients}
         />
       )}
     </>

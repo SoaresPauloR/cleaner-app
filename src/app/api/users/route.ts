@@ -8,7 +8,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { name, email, number, type, id_google } = await req.json();
+  const { name, email, number, type, id_google, status } = await req.json();
 
   const newUser = await prisma.users.create({
     data: {
@@ -17,6 +17,7 @@ export async function POST(req: Request) {
       number,
       type,
       id_google,
+      status,
     },
   });
 

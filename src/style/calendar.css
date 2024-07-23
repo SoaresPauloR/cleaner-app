@@ -46,5 +46,5 @@
 }
 
 .input {
-  @apply w-full p-2 rounded-lg border bg-transparent;
+  @apply w-full p-2 rounded-lg border bg-transparent border-gray-400 placeholder-gray-400;
 }

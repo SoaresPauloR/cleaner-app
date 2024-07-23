@@ -8,6 +8,8 @@ function CleanerInput({ post, setPost }: PostProps) {
   const [cleaners, setCleaners] = useState<Array<Users>>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const changeModal = () => setModalIsOpen(!modalIsOpen);
+
   useEffect(() => {
     const getCleaners = async () => {
       const response = await fetch('api/cleaner');
@@ -24,7 +26,7 @@ function CleanerInput({ post, setPost }: PostProps) {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    setModalIsOpen(!modalIsOpen);
+    changeModal();
   };
 
   return (
@@ -59,8 +61,9 @@ function CleanerInput({ post, setPost }: PostProps) {
 
       {modalIsOpen && (
         <CreateCleaner
-          modalIsOpen={modalIsOpen}
-          setModalIsOpen={setModalIsOpen}
+          changeModal={changeModal}
+          cleaners={cleaners}
+          setCleaners={setCleaners}
         />
       )}
     </>

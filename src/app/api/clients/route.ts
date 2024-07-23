@@ -22,8 +22,10 @@ export async function POST(req: Request) {
           postcode: address.postcode,
           street: address.street,
           house_number: address.house_number,
+          status: 'enable',
         },
       },
+      status: 'enable',
     },
     include: {
       address: true,

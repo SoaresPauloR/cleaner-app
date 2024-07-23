@@ -21,25 +21,6 @@ function FormEvents({ post, setPost }: FormEventsProps) {
           <CleanerInput post={post} setPost={setPost} />
         </div>
       </div>
-      {/* <div className="input-content">
-        <label htmlFor="">More Cleaner</label>
-        <select
-          value={post.more_cleaner}
-          onChange={(e) => {
-            const more_cleaner = e.target.value;
-            setPost((prevPost) => ({
-              ...prevPost,
-              more_cleaner,
-            }));
-          }}
-          className="input"
-        >
-          <option hidden value="0">
-            Select more cleaners
-          </option>
-          {cleaners.map((e) => e && <option key={e.id}>{e.name}</option>)}
-        </select>
-      </div> */}
       <div className="input-content-row">
         <div className="input-content">
           <label htmlFor="">Start Time</label>

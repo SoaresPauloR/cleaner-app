@@ -1,32 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '../../modal/Modal';
 import CancelButton from '../../buttons/CancelButton';
 import SubmitButton from '../../buttons/SubmitButton';
+import { Users } from '@prisma/client';
+import FormCleaner from './FormCleaner';
 
 type Props = {
-  modalIsOpen: boolean;
-  setModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  changeModal: () => void;
+  cleaners: Users[];
+  setCleaners: React.Dispatch<React.SetStateAction<Users[]>>;
 };
 
-function CreateClient({ modalIsOpen, setModalIsOpen }: Props) {
-  const header = (
-    <>
-      <h1 className="text-xl font-bold">Create Cleaner</h1>
-    </>
-  );
+function CreateCleaner({ changeModal, cleaners, setCleaners }: Props) {
+  const [post, setPost] = useState<Users>({
+    id: 0,
+    email: '',
+    name: '',
+    number: '',
+    type: 'Cleaner',
+    id_google: '',
+    status: 'enable',
+  });
 
   const handleCancelButton = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    setModalIsOpen(!modalIsOpen);
+    changeModal();
   };
 
-  const handleSubmitButton = (
+  const handleSubmitButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+    const rawResponse = await fetch('api/users', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(post),
+    });
+
+    const responseData = (await rawResponse.json()) as Users;
+
+    if (rawResponse.ok) {
+      changeModal();
+    }
+
+    if (post) setCleaners([...cleaners, responseData]);
   };
+
+  const header = <h1 className="text-xl font-bold">New Cleaner</h1>;
 
   const footer = (
     <>
@@ -37,9 +62,9 @@ function CreateClient({ modalIsOpen, setModalIsOpen }: Props) {
 
   return (
     <Modal header={header} footer={footer}>
-      <>Form</>
+      <FormCleaner post={post} setPost={setPost} />
     </Modal>
   );
 }
 
-export default CreateClient;
+export default CreateCleaner;

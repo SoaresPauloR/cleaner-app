@@ -19,11 +19,11 @@ export async function DELETE(req: Request, { params }: ParamsType) {
 
 export async function PUT(req: Request, { params }: ParamsType) {
   const id = +params.id;
-  const { name, email, number, type, id_google } = await req.json();
+  const { name, email, number, type, id_google, status } = await req.json();
 
   const user = await prisma.users.update({
     where: { id },
-    data: { name, email, number, type, id_google },
+    data: { name, email, number, type, id_google, status },
   });
 
   return NextResponse.json(user);

@@ -1,5 +1,5 @@
 import { EventCalendar } from '@/types/EventCalendar';
-import { EventCompost } from '@/types/EventCompost';
+import { EventPopulate } from '@/types/EventPopulate';
 import { DateSelectArg } from '@fullcalendar/core';
 import React, { useEffect, useState } from 'react';
 import SubmitButton from '../../buttons/SubmitButton';
@@ -49,7 +49,7 @@ const CreateEvent = ({
   };
 
   const saveEvent = async (): Promise<void> => {
-    const newPost = post;
+    const newPost = { ...post };
 
     if (!selectInfo) return;
 
@@ -65,7 +65,7 @@ const CreateEvent = ({
       body: JSON.stringify(newPost),
     });
 
-    const responseData = (await rawResponse.json()) as EventCompost;
+    const responseData = (await rawResponse.json()) as EventPopulate;
 
     setEvents([
       ...events,
