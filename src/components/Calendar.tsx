@@ -7,7 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import '@/style/calendar.css';
 import { DateSelectArg, EventClickArg } from '@fullcalendar/core';
-import CreateEvent from './modal/CreateEvent';
+import CreateEvent from './CreateEvent';
 import Loading from './Loading';
 import { EventCalendar } from '@/types/EventCalendar';
 import { EventCompost } from '@/types/EventCompost';
