@@ -3,7 +3,7 @@
 .env*
 
 # dependencies
-/node_modules
+*/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -11,8 +11,10 @@
 # testing
 /coverage
 
+.vscode
+
 # next.js
-/.next/
+.next/
 /out/
 
 # production

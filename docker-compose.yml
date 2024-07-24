@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  backend:
+    container_name: clean-up-backend
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: mysql://root:123456@db:3306/cleaner-db
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+
+  frontend:
+    container_name: clean-up-frontend
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+
+
+  db:
+    container_name: clean-up-db
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: cleaner-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
