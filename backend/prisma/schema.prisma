@@ -35,7 +35,7 @@ model Users {
   Events    Events[]
 }
 
-model Client {
+model Clients {
   id      Int      @id @default(autoincrement())
   name    String
   number  String
@@ -45,13 +45,13 @@ model Client {
 }
 
 model Address {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   postcode     String
   street       String
   status       Status
   house_number Int
-  id_client    Int    @unique
-  client       Client @relation(fields: [id_client], references: [id])
+  id_client    Int     @unique
+  client       Clients @relation(fields: [id_client], references: [id])
 }
 
 enum ValueType {
@@ -76,6 +76,6 @@ model Events {
   value        Decimal
   value_type   ValueType
   pay_method   PayMethod
-  client       Client    @relation(fields: [id_client], references: [id])
+  client       Clients   @relation(fields: [id_client], references: [id])
   cleaner      Users     @relation(fields: [id_cleaner], references: [id])
 }
