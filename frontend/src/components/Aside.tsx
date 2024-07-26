@@ -52,7 +52,7 @@ function Aside({ className, activePage }: MainProps & AsideProps) {
           </Link>
         </nav>
         <div className="w-full">
-          <LogoutButton click={changeLoading} />
+          <LogoutButton isLoading={changeLoading} />
         </div>
       </aside>
       {loading && <Loading />}

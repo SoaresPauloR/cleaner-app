@@ -3,6 +3,10 @@ import { Request, Response } from 'express';
 
 class UsersController {
   async index(req: Request, res: Response): Promise<void> {
+    if (!req.isAuthenticated()) {
+      return res.redirect('/auth/google');
+    }
+
     try {
       const users = await prisma.users.findMany();
       res.json(users);
