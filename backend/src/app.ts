@@ -41,6 +41,9 @@ class App {
   }
 
   private configureRoutes(): void {
+    this.app.get('/', (req: Request, res: Response) => {
+      res.json({ message: 'Welcome to Cleaning App API', version: '1.0.0' });
+    });
     this.app.use('/users/', authenticateJWT, usersRouter);
     this.app.use('/cleaners/', cleanersRouter);
     this.app.use('/clients/', clientsRouter);
@@ -90,8 +93,6 @@ class App {
             process.env.JWT_SECRET as string,
             { expiresIn: '1h' },
           );
-
-          console.log(token);
 
           res.redirect(`http://localhost:3000/callback?token=${token}`);
         } else {

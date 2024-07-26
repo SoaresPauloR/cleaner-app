@@ -54,14 +54,17 @@ const CreateEvent = ({
     newPost.date_start = convertDate(post.date_start);
     newPost.date_finish = convertDate(post.date_finish);
 
-    const rawResponse = await fetch('api/events', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    const rawResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/events`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPost),
       },
-      body: JSON.stringify(newPost),
-    });
+    );
 
     const responseData = (await rawResponse.json()) as EventPopulate;
 

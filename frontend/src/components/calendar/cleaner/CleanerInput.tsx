@@ -12,7 +12,9 @@ function CleanerInput({ post, setPost }: PostProps) {
 
   useEffect(() => {
     const getCleaners = async () => {
-      const response = await fetch('api/cleaner');
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/cleaner`,
+      );
       if (response.ok) {
         const result = await response.json();
         setCleaners(result);

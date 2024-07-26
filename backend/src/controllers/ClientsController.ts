@@ -68,7 +68,6 @@ class ClientsController {
     try {
       return res.status(500).json({ error: 'Not implemented' });
     } catch (err) {
-      console.log(err);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }

@@ -14,7 +14,9 @@ function ClientInput({ post, setPost }: PostProps) {
 
   useEffect(() => {
     const getClients = async () => {
-      const response = await fetch('api/clients');
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/clients`,
+      );
       if (response.ok) {
         const result = await response.json();
         setClients(result);

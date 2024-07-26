@@ -33,14 +33,17 @@ function CreateCleaner({ changeModal, cleaners, setCleaners }: Props) {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    const rawResponse = await fetch('api/users', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    const rawResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(post),
       },
-      body: JSON.stringify(post),
-    });
+    );
 
     const responseData = (await rawResponse.json()) as Users;
 

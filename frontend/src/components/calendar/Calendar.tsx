@@ -36,7 +36,7 @@ export function Calendar() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await fetch('api/events');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`);
         const data = (await res.json()) as EventPopulate[];
         const events = treatData(data);
         setEvents(events);
