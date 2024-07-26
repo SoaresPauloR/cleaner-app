@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import PlusButton from '../../buttons/PlusButton';
 import CreateCleaner from './CreateCleaner';
 
-function CleanerInput({ post, setPost }: PostProps) {
+function CleanerInput({ post, setPost, required }: PostProps) {
   const [cleaners, setCleaners] = useState<Array<Users>>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -13,7 +13,7 @@ function CleanerInput({ post, setPost }: PostProps) {
   useEffect(() => {
     const getCleaners = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/cleaner`,
+        `${process.env.NEXT_PUBLIC_API_URL}/cleaners`,
       );
       if (response.ok) {
         const result = await response.json();
@@ -33,9 +33,12 @@ function CleanerInput({ post, setPost }: PostProps) {
 
   return (
     <>
-      <label htmlFor="">Cleaner</label>
+      <label className="required" htmlFor="">
+        Cleaner
+      </label>
       <div className="flex gap-2">
         <select
+          required={required}
           value={post.id_cleaner}
           onChange={(e) => {
             const id_cleaner = parseInt(e.target.value, 10);

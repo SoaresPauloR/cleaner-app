@@ -7,6 +7,7 @@ import CancelButton from '../../buttons/CancelButton';
 import FormEvents from './FormEvents';
 import { EventsPost } from '@/types/EventsPost';
 import Modal from '../../modal/Modal';
+import Swal from 'sweetalert2';
 
 type CreateEventProps = {
   modalIsOpen: boolean;
@@ -47,38 +48,65 @@ const CreateEvent = ({
   };
 
   const saveEvent = async (): Promise<void> => {
-    const newPost = { ...post };
+    try {
+      const newPost = { ...post };
 
-    if (!selectInfo) return;
+      if (!selectInfo) return;
 
-    newPost.date_start = convertDate(post.date_start);
-    newPost.date_finish = convertDate(post.date_finish);
+      newPost.date_start = convertDate(post.date_start);
+      newPost.date_finish = convertDate(post.date_finish);
 
-    const rawResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/events`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+      const rawResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/events`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newPost),
         },
-        body: JSON.stringify(newPost),
-      },
-    );
+      );
 
-    const responseData = (await rawResponse.json()) as EventPopulate;
+      const responseData = (await rawResponse.json()) as EventPopulate;
 
-    setEvents([
-      ...events,
-      {
-        id: responseData.id.toString(),
-        title: responseData.client.name,
-        start: responseData.date_start.toString(),
-        end: responseData.date_finish.toString(),
-      },
-    ]);
+      if (responseData?.error) {
+        Swal.fire({
+          title: responseData.error,
+          icon: 'error',
+          confirmButtonText: 'Okay',
+        });
 
-    if (rawResponse.ok) changeModal();
+        return;
+      }
+
+      setEvents([
+        ...events,
+        {
+          id: responseData.id.toString(),
+          title: responseData.client.name,
+          start: responseData.date_start.toString(),
+          end: responseData.date_finish.toString(),
+        },
+      ]);
+
+      if (rawResponse.ok) {
+        changeModal();
+        Swal.fire({
+          title: 'Event saved successfully',
+          icon: 'success',
+          confirmButtonText: 'Okay',
+        });
+      }
+    } catch (error) {
+      console.error('Error saving event: ', error);
+
+      Swal.fire({
+        title: 'Error saving event',
+        icon: 'error',
+        confirmButtonText: 'Okay',
+      });
+    }
   };
 
   useEffect(() => {

@@ -1,5 +1,7 @@
+import { EventPayload } from '@/types/EventPayload';
 import prisma from '../lib/prisma';
 import { Request, Response } from 'express';
+import { PayMethod, Prisma, Status, ValueType } from '@prisma/client';
 
 class EventsController {
   async index(req: Request, res: Response): Promise<void> {
@@ -10,7 +12,7 @@ class EventsController {
 
       res.json(event);
     } catch (error) {
-      res.status(500).json({ message: 'Internal Server Error' });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
@@ -22,13 +24,17 @@ class EventsController {
 
       const id = parseInt(req.params.id);
 
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+
       const event = await prisma.events.findUnique({
         where: { id },
         include: { client: true, cleaner: true },
       });
 
       if (!event) {
-        return res.status(404).json({ error: 'Cleaner not found' });
+        return res.status(404).json({ error: 'Event not found' });
       }
 
       res.json(event);
@@ -51,7 +57,39 @@ class EventsController {
         pay_method,
       } = req.body;
 
-      const status = 'enable';
+      const status = 'enable' as Status;
+
+      if (
+        !id_client ||
+        !id_cleaner ||
+        !date_start ||
+        !date_finish ||
+        !value ||
+        !value_type ||
+        !pay_method
+      ) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      if (typeof id_client !== 'number') {
+        return res.status(400).json({ error: 'Invalid Client' });
+      }
+
+      if (typeof id_cleaner !== 'number') {
+        return res.status(400).json({ error: 'Invalid Cleaner' });
+      }
+
+      if (value <= 0) {
+        return res.status(400).json({ error: 'Invalid Value' });
+      }
+
+      if (!(value_type in ValueType)) {
+        return res.status(400).json({ error: 'Invalid Pay Method' });
+      }
+
+      if (!(pay_method in PayMethod)) {
+        return res.status(400).json({ error: 'Invalid Who pay' });
+      }
 
       const newEvent = await prisma.events.create({
         data: {
@@ -75,7 +113,7 @@ class EventsController {
 
       res.json(eventRes);
     } catch (error) {
-      res.status(400).json({ message: 'Bad Request' });
+      res.status(400).json({ error: 'Bad Request' });
     }
   }
 
@@ -85,8 +123,14 @@ class EventsController {
         return res.status(404).json({ error: 'ID not found' });
       }
 
+      const id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid ID' });
+      }
+
       const event = await prisma.events.findUnique({
-        where: { id: parseInt(req.params.id) },
+        where: { id },
       });
 
       if (!event) {
@@ -105,6 +149,42 @@ class EventsController {
         value_type,
         pay_method,
       } = req.body;
+
+      if (
+        !id_client ||
+        !id_cleaner ||
+        !date_start ||
+        !date_finish ||
+        !value ||
+        !value_type ||
+        !pay_method
+      ) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
+
+      if (typeof id_client !== 'number') {
+        return res.status(400).json({ error: 'Invalid Client' });
+      }
+
+      if (typeof id_cleaner !== 'number') {
+        return res.status(400).json({ error: 'Invalid Cleaner' });
+      }
+
+      if (value <= 0) {
+        return res.status(400).json({ error: 'Invalid Value' });
+      }
+
+      if (!(value_type in ValueType)) {
+        return res.status(400).json({ error: 'Invalid Pay method' });
+      }
+
+      if (!(pay_method in PayMethod)) {
+        return res.status(400).json({ error: 'Invalid Who pay' });
+      }
+
+      if (!(status in Status)) {
+        return res.status(400).json({ error: 'Invalid Status' });
+      }
 
       const newEvent = await prisma.events.update({
         where: { id: parseInt(req.params.id) },

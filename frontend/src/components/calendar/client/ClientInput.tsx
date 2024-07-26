@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import PlusButton from '../../buttons/PlusButton';
 import CreateClient from '../client/CreateClient';
 
-function ClientInput({ post, setPost }: PostProps) {
+function ClientInput({ post, setPost, required }: PostProps) {
   const [clients, setClients] = useState<Array<Client>>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -35,9 +35,12 @@ function ClientInput({ post, setPost }: PostProps) {
 
   return (
     <>
-      <label htmlFor="">Client</label>
+      <label className="required" htmlFor="">
+        Client
+      </label>
       <div className="flex gap-2">
         <select
+          required={required}
           value={post.id_client}
           onChange={(e) => {
             const id_client = parseInt(e.target.value, 10);

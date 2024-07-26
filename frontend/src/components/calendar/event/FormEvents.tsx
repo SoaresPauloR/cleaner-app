@@ -16,16 +16,19 @@ function FormEvents({ post, setPost }: FormEventsProps) {
     <form className="flex flex-col gap-2" action="">
       <div className="input-content-row">
         <div className="input-content">
-          <ClientInput post={post} setPost={setPost} />
+          <ClientInput required post={post} setPost={setPost} />
         </div>
         <div className="input-content">
-          <CleanerInput post={post} setPost={setPost} />
+          <CleanerInput required post={post} setPost={setPost} />
         </div>
       </div>
       <div className="input-content-row">
         <div className="input-content">
-          <label htmlFor="">Start Time</label>
+          <label className="required" htmlFor="">
+            Start Time
+          </label>
           <input
+            required
             value={post.date_start}
             type="datetime-local"
             onChange={(e) => {
@@ -39,8 +42,11 @@ function FormEvents({ post, setPost }: FormEventsProps) {
           />
         </div>
         <div className="input-content">
-          <label htmlFor="">Finish Time</label>
+          <label className="required" htmlFor="">
+            Finish Time
+          </label>
           <input
+            required
             value={post.date_finish}
             onChange={(e) => {
               const date_finish = e.target.value;
@@ -73,8 +79,11 @@ function FormEvents({ post, setPost }: FormEventsProps) {
       </div>
       <div className="input-content-row">
         <div className="input-content">
-          <label htmlFor="">Value</label>
+          <label className="required" htmlFor="">
+            Value
+          </label>
           <input
+            required
             value={formatValue(post.value)}
             onChange={(e) => {
               const value = removeStr(e.target.value);
@@ -89,8 +98,11 @@ function FormEvents({ post, setPost }: FormEventsProps) {
           />
         </div>
         <div className="input-content">
-          <label htmlFor="">Pay method</label>
+          <label className="required" htmlFor="">
+            Pay method
+          </label>
           <select
+            required
             defaultValue="0"
             value={post.value_type}
             onChange={(e) => {
@@ -111,8 +123,11 @@ function FormEvents({ post, setPost }: FormEventsProps) {
         </div>
       </div>
       <div className="input-content">
-        <label htmlFor="">Who pay</label>
+        <label className="required" htmlFor="">
+          Who pay
+        </label>
         <select
+          required
           value={post.pay_method}
           onChange={(e) => {
             const pay_method = e.target.value;
