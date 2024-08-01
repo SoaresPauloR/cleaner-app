@@ -1,3 +1,4 @@
+import { isEmail } from 'validator';
 import prisma from '../lib/prisma';
 import { Request, Response } from 'express';
 
@@ -149,6 +150,11 @@ class CleanersController {
         res
           .status(400)
           .json({ message: 'Name, email, number, and status are required' });
+        return;
+      }
+
+      if (!isEmail(email)) {
+        res.status(400).json({ error: 'Invalid email format' });
         return;
       }
 

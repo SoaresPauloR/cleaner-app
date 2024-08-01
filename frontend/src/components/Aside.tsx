@@ -29,21 +29,27 @@ function Aside({ className, activePage }: MainProps & AsideProps) {
         </div>
         <nav className="mb-48 w-full flex gap-3 flex-col">
           <Link
-            onClick={changeLoading}
+            onClick={() => {
+              if (activePage !== 'home') changeLoading;
+            }}
             className={`nav-link ${activePage === 'home' ? 'active' : ''}`}
             href="/"
           >
             <FaHome size={24} /> Home
           </Link>
           <Link
-            onClick={changeLoading}
+            onClick={() => {
+              if (activePage !== 'calendar') changeLoading;
+            }}
             className={`nav-link ${activePage === 'calendar' ? 'active' : ''}`}
             href="/calendar"
           >
             <FaCalendarDay size={24} /> Calendar
           </Link>
           <Link
-            onClick={changeLoading}
+            onClick={() => {
+              if (activePage !== 'profile') changeLoading;
+            }}
             className={`nav-link ${activePage === 'profile' ? 'active' : ''}`}
             href="/profile"
           >

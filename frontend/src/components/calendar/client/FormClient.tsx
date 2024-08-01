@@ -30,8 +30,11 @@ function FormClient({ post, setPost }: FormCleanerProp) {
     <form className="flex flex-col gap-2">
       <div className="input-content-row">
         <div className="input-content">
-          <label htmlFor="name">Name</label>
+          <label className="required" htmlFor="name">
+            Name
+          </label>
           <input
+            required
             placeholder="Will Taylor..."
             type="text"
             className="input"
@@ -41,8 +44,11 @@ function FormClient({ post, setPost }: FormCleanerProp) {
           />
         </div>
         <div className="input-content">
-          <label htmlFor="number">Phone number</label>
+          <label className="required" htmlFor="number">
+            Phone number
+          </label>
           <input
+            required
             placeholder="9876 543210"
             type="text"
             className="input"
@@ -57,8 +63,11 @@ function FormClient({ post, setPost }: FormCleanerProp) {
 
       <div className="input-content-row">
         <div className="input-content">
-          <label htmlFor="postcode">Postcode</label>
+          <label className="required" htmlFor="postcode">
+            Postcode
+          </label>
           <input
+            required
             placeholder="SE1 7PB"
             type="text"
             className="input"
@@ -68,18 +77,24 @@ function FormClient({ post, setPost }: FormCleanerProp) {
           />
         </div>
         <div className="input-content">
-          <label htmlFor="house_number">House Number</label>
+          <label className="required" htmlFor="house_number">
+            House Number
+          </label>
           <input
+            required
             type="text"
             className="input"
-            value={post.address.house_number}
+            value={parseInt(post.address.house_number.toString())}
             id="house_number"
             onChange={handleChangeAddress}
           />
         </div>
         <div className="input-content">
-          <label htmlFor="street">Street</label>
+          <label className="required" htmlFor="street">
+            Street
+          </label>
           <input
+            required
             placeholder="Belvedere Road"
             type="text"
             className="input"

@@ -20,6 +20,7 @@ function CleanerInput({ post, setPost, required }: PostProps) {
           },
         },
       );
+
       if (response.ok) {
         const result = await response.json();
         setCleaners(result);

@@ -48,77 +48,49 @@ const CreateEvent = ({
     return localDate;
   };
 
+  const validatePost = (post: EventsPost): string | null => {
+    if (
+      !post.id_client ||
+      !post.id_cleaner ||
+      !post.date_start ||
+      !post.date_finish ||
+      !post.value ||
+      !post.value_type ||
+      !post.pay_method
+    ) {
+      return 'Missing required fields';
+    }
+
+    if (typeof post.id_client !== 'number') return 'Invalid Client';
+    if (typeof post.id_cleaner !== 'number') return 'Invalid Cleaner';
+    if (post.value <= 0) return 'Invalid Value';
+    if (!isValueType(post.value_type)) return 'Invalid Value Type';
+    if (!isPayMethod(post.pay_method)) return 'Invalid Pay Method';
+
+    return null;
+  };
+
   const saveEvent = async (): Promise<void> => {
+    const newPost = { ...post };
+
+    const validationError = validatePost(newPost);
+
+    if (!selectInfo) return;
+
+    if (validationError) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error creating Event',
+        text: validationError,
+        confirmButtonText: 'Okay',
+      });
+      return;
+    }
+
+    newPost.date_start = convertDate(post.date_start);
+    newPost.date_finish = convertDate(post.date_finish);
+
     try {
-      const newPost = { ...post };
-
-      if (!selectInfo) return;
-
-      if (
-        !newPost.id_client ||
-        !newPost.id_cleaner ||
-        !newPost.date_start ||
-        !newPost.date_finish ||
-        !newPost.value ||
-        !newPost.value_type ||
-        !newPost.pay_method
-      ) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Missing required fields',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      if (typeof newPost.id_client !== 'number') {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Client',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      if (typeof newPost.id_cleaner !== 'number') {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Cleaner',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      if (newPost.value <= 0) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Value',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      if (!isValueType(newPost.value_type)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Pay method',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      if (!isPayMethod(newPost.pay_method)) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Who pay',
-          confirmButtonText: 'Okay',
-        });
-        return;
-      }
-
-      newPost.date_start = convertDate(post.date_start);
-      newPost.date_finish = convertDate(post.date_finish);
-
       const rawResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/events`,
         {
@@ -131,6 +103,15 @@ const CreateEvent = ({
           body: JSON.stringify(newPost),
         },
       );
+
+      if (rawResponse.ok) {
+        changeModal();
+        Swal.fire({
+          title: 'Event saved successfully',
+          icon: 'success',
+          confirmButtonText: 'Okay',
+        });
+      }
 
       const responseData = (await rawResponse.json()) as EventPopulate;
 
@@ -153,15 +134,6 @@ const CreateEvent = ({
           end: responseData.date_finish.toString(),
         },
       ]);
-
-      if (rawResponse.ok) {
-        changeModal();
-        Swal.fire({
-          title: 'Event saved successfully',
-          icon: 'success',
-          confirmButtonText: 'Okay',
-        });
-      }
     } catch (error) {
       console.error('Error saving event: ', error);
 
