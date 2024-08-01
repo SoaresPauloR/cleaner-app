@@ -46,3 +46,11 @@ export type Events = {
 export type ValueType = 'perHour' | 'total';
 
 export type PayMethod = 'clientPay' | 'adminPay';
+
+export function isValueType(valueType: ValueType | string): boolean {
+  return ['perHour', 'total'].includes(valueType);
+}
+
+export function isPayMethod(PayMethod: PayMethod | string): boolean {
+  return ['clientPay', 'adminPay'].includes(PayMethod);
+}

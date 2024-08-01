@@ -1,22 +1,44 @@
 import prisma from '../lib/prisma';
 import { Request, Response } from 'express';
 
+/**
+ * CleanersController class handles CRUD operations for cleaner data.
+ */
 class CleanersController {
+  /**
+   * Fetches and returns all cleaners.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
   async index(req: Request, res: Response): Promise<void> {
     try {
-      const cleaner = await prisma.users.findMany({
+      const cleaners = await prisma.users.findMany({
         where: { type: 'Cleaner' },
       });
-
-      res.json(cleaner);
+      res.json(cleaners);
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error' });
+      return;
     }
   }
 
-  async store(req: Request, res: Response) {
+  /**
+   * Creates a new cleaner and returns the created cleaner.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async store(req: Request, res: Response): Promise<void> {
     try {
       const { name, email, number } = req.body;
+
+      if (!name || !email || !number) {
+        res
+          .status(400)
+          .json({ message: 'Name, email, and number are required' });
+        return;
+      }
 
       const type = 'Cleaner';
       const id_google = '';
@@ -25,82 +47,120 @@ class CleanersController {
       const newCleaner = await prisma.users.create({
         data: { name, email, number, type, status, id_google },
       });
+
       res.json(newCleaner);
     } catch (error) {
       res.status(400).json({ message: 'Bad Request' });
+      return;
     }
   }
 
-  async show(req: Request, res: Response) {
+  /**
+   * Fetches and returns a cleaner by ID.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async show(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.params.id) {
-        return res.status(404).json({ error: 'ID not found' });
-      }
-
       const id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID format' });
+        return;
+      }
 
       const cleaner = await prisma.users.findUnique({
         where: { id, type: 'Cleaner' },
       });
 
       if (!cleaner) {
-        return res.status(404).json({ error: 'Cleaner not found' });
+        res.status(404).json({ error: 'Cleaner not found' });
+        return;
       }
 
       res.json(cleaner);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 
-  async delete(req: Request, res: Response) {
+  /**
+   * Deletes a cleaner by ID and returns a confirmation message.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async delete(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.params.id) {
-        return res.status(404).json({ error: 'ID not found' });
+      const id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID format' });
+        return;
       }
 
       const cleaner = await prisma.users.findUnique({
-        where: { id: parseInt(req.params.id), type: 'Cleaner' },
+        where: { id, type: 'Cleaner' },
       });
 
       if (!cleaner) {
-        return res.status(404).json({ error: 'Cleaner not found' });
+        res.status(404).json({ error: 'Cleaner not found' });
+        return;
       }
 
-      await prisma.users.delete({ where: { id: cleaner.id, type: 'Cleaner' } });
+      await prisma.users.delete({ where: { id: cleaner.id } });
 
-      res.json({
-        message: 'Cleaner deleted!',
-      });
+      res.json({ message: 'Cleaner deleted!' });
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 
-  async update(req: Request, res: Response) {
+  /**
+   * Updates a cleaner by ID and returns the updated cleaner.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async update(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.params.id) {
-        return res.status(404).json({ error: 'ID not found' });
+      const id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID format' });
+        return;
       }
 
       const cleaner = await prisma.users.findUnique({
-        where: { id: parseInt(req.params.id), type: 'Cleaner' },
+        where: { id, type: 'Cleaner' },
       });
 
       if (!cleaner) {
-        return res.status(404).json({ error: 'Cleaner not found' });
+        res.status(404).json({ error: 'Cleaner not found' });
+        return;
       }
 
       const { name, email, number, status } = req.body;
 
-      const newCleaner = await prisma.users.update({
-        where: { id: parseInt(req.params.id), type: 'Cleaner' },
+      if (!name || !email || !number || !status) {
+        res
+          .status(400)
+          .json({ message: 'Name, email, number, and status are required' });
+        return;
+      }
+
+      const updatedCleaner = await prisma.users.update({
+        where: { id },
         data: { name, email, number, status },
       });
 
-      res.json(newCleaner);
+      res.json(updatedCleaner);
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 }

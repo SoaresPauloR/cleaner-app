@@ -16,6 +16,11 @@ function ClientInput({ post, setPost, required }: PostProps) {
     const getClients = async () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/clients`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        },
       );
       if (response.ok) {
         const result = await response.json();

@@ -8,6 +8,7 @@ import FormEvents from './FormEvents';
 import { EventsPost } from '@/types/EventsPost';
 import Modal from '../../modal/Modal';
 import Swal from 'sweetalert2';
+import { isValueType, isPayMethod } from '@/types/PrismaTypes';
 
 type CreateEventProps = {
   modalIsOpen: boolean;
@@ -53,6 +54,68 @@ const CreateEvent = ({
 
       if (!selectInfo) return;
 
+      if (
+        !newPost.id_client ||
+        !newPost.id_cleaner ||
+        !newPost.date_start ||
+        !newPost.date_finish ||
+        !newPost.value ||
+        !newPost.value_type ||
+        !newPost.pay_method
+      ) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Missing required fields',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
+      if (typeof newPost.id_client !== 'number') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Client',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
+      if (typeof newPost.id_cleaner !== 'number') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Cleaner',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
+      if (newPost.value <= 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Value',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
+      if (!isValueType(newPost.value_type)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Pay method',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
+      if (!isPayMethod(newPost.pay_method)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Who pay',
+          confirmButtonText: 'Okay',
+        });
+        return;
+      }
+
       newPost.date_start = convertDate(post.date_start);
       newPost.date_finish = convertDate(post.date_finish);
 
@@ -63,6 +126,7 @@ const CreateEvent = ({
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: JSON.stringify(newPost),
         },

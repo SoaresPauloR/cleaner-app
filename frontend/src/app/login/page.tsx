@@ -1,10 +1,30 @@
 'use client';
 
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import Swal from 'sweetalert2';
 
 const LoginPage = () => {
+  const route = useRouter();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const error = urlParams.get('error');
+
+    if (error) {
+      console.error(`Login error: ${error}`);
+
+      Swal.fire({
+        title: error,
+        icon: 'error',
+        confirmButtonText: 'Okay',
+      });
+    }
+  }, []);
+
   const handleLogin = () => {
-    window.location.href = 'http://localhost:3001/auth/google';
+    route.push('http://localhost:3001/auth/google');
   };
 
   return (

@@ -12,6 +12,7 @@
 /coverage
 
 .vscode
+**/dist/***
 
 # next.js
 .next/

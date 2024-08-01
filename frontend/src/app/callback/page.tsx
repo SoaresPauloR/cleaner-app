@@ -1,9 +1,12 @@
 'use client';
 
 import Loading from '@/components/Loading';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 const CallbackPage = () => {
+  const route = useRouter();
+
   useEffect(() => {
     const handleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -11,15 +14,15 @@ const CallbackPage = () => {
 
       if (token) {
         localStorage.setItem('token', token);
-        location.href = '/';
+        route.push('/');
       } else {
         console.error('No token found in the URL.');
-        location.href = '/login';
+        route.push('/login');
       }
     };
 
     handleCallback();
-  }, []);
+  }, [route]);
 
   return <Loading />;
 };

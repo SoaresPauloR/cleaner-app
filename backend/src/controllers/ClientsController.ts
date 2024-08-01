@@ -1,23 +1,53 @@
 import prisma from '../lib/prisma';
 import { Request, Response } from 'express';
 
+/**
+ * ClientsController class handles CRUD operations for client data.
+ */
 class ClientsController {
+  /**
+   * Fetches and returns all clients with their addresses.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
   async index(req: Request, res: Response): Promise<void> {
     try {
       const clients = await prisma.clients.findMany({
         include: { address: true },
       });
-
       res.json(clients);
     } catch (error) {
       res.status(500).json({ message: 'Internal Server Error' });
+      return;
     }
   }
 
-  async store(req: Request, res: Response) {
+  /**
+   * Creates a new client with address and returns the created client.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async store(req: Request, res: Response): Promise<void> {
     try {
       const { name, number, address } = req.body;
       const { postcode, house_number, street } = address;
+
+      if (
+        !name ||
+        !number ||
+        !address ||
+        !postcode ||
+        !house_number ||
+        !street
+      ) {
+        res.status(400).json({
+          message:
+            'Name, number, postcode, house_number and street are required',
+        });
+        return;
+      }
 
       const status = 'enable';
 
@@ -35,62 +65,111 @@ class ClientsController {
         include: { address: true },
       });
 
+      if (!clientRes) {
+        res.status(404).json({ message: 'Client not found' });
+        return;
+      }
+
       res.json(clientRes);
     } catch (error) {
       res.status(400).json({ message: 'Bad Request' });
+      return;
     }
   }
 
-  async show(req: Request, res: Response) {
+  /**
+   * Fetches and returns a client by ID with their address.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async show(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.params.id) {
-        return res.status(404).json({ error: 'ID not found' });
-      }
-
       const id = parseInt(req.params.id);
 
-      const clients = await prisma.clients.findUnique({
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID' });
+        return;
+      }
+
+      const client = await prisma.clients.findUnique({
         where: { id },
         include: { address: true },
       });
 
-      if (!clients) {
-        return res.status(404).json({ error: 'Client not found' });
+      if (!client) {
+        res.status(404).json({ error: 'Client not found' });
+        return;
       }
 
-      res.json(clients);
+      res.json(client);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 
-  async delete(req: Request, res: Response) {
+  /**
+   * Deletes a client by ID. Not implemented.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async delete(req: Request, res: Response): Promise<void> {
     try {
-      return res.status(500).json({ error: 'Not implemented' });
+      res.status(500).json({ error: 'Not implemented' });
+      return;
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 
-  async update(req: Request, res: Response) {
+  /**
+   * Updates a client by ID and returns the updated client.
+   * @param req - Express request object.
+   * @param res - Express response object.
+   * @returns Promise<void>
+   */
+  async update(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.params.id) {
-        return res.status(404).json({ error: 'ID not found' });
+      const id = parseInt(req.params.id);
+
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID' });
+        return;
       }
 
-      const clients = await prisma.clients.findUnique({
-        where: { id: parseInt(req.params.id) },
+      const client = await prisma.clients.findUnique({
+        where: { id },
       });
 
-      if (!clients) {
-        return res.status(404).json({ error: 'Client not found' });
+      if (!client) {
+        res.status(404).json({ error: 'Client not found' });
+        return;
       }
 
       const { name, number, address, status } = req.body;
       const { postcode, house_number, street } = address;
 
-      const newClient = await prisma.clients.update({
-        where: { id: clients.id },
+      if (
+        !name ||
+        !number ||
+        !address ||
+        !status ||
+        !postcode ||
+        !house_number ||
+        !street
+      ) {
+        res.status(400).json({
+          message:
+            'Name, number, postcode, house_number, street and status are required',
+        });
+        return;
+      }
+
+      const updatedClient = await prisma.clients.update({
+        where: { id },
         data: {
           name,
           number,
@@ -102,13 +181,19 @@ class ClientsController {
       });
 
       const clientRes = await prisma.clients.findUnique({
-        where: { id: newClient.id },
+        where: { id: updatedClient.id },
         include: { address: true },
       });
+
+      if (!clientRes) {
+        res.status(404).json({ error: 'Client not found' });
+        return;
+      }
 
       res.json(clientRes);
     } catch (err) {
       res.status(500).json({ error: 'Internal Server Error' });
+      return;
     }
   }
 }

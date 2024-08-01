@@ -1,18 +1,29 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+// Library imports
+import express, { Application } from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import jwt from 'jsonwebtoken';
+import cors from 'cors';
+
+// Middleware imports
+import { authenticateJWT } from './middlewares/jwt';
+
+// Utilities imports
+import { googleCallback } from './utils/googleCallback';
+
+// Route imports
 import usersRouter from './routes/usersRoutes';
 import cleanersRouter from './routes/cleanersRoutes';
 import clientsRouter from './routes/clientsRoutes';
 import eventsRouter from './routes/eventsRoutes';
-import cors from 'cors';
-import { authenticateJWT } from './middlewares/jwt';
-import prisma from './lib/prisma';
+import verifyToken from './routes/verifyTokenRoutes';
+import { root } from './routes/rootRoute';
+import { logout } from './routes/logoutRoute';
+import { login } from './utils/login';
 
 class App {
   public app: Application;
+
   private corsOptions: cors.CorsOptions = {
     origin: ['http://localhost:3000', 'https://accounts.google.com'],
     optionsSuccessStatus: 200,
@@ -26,9 +37,22 @@ class App {
     this.configurePassport();
   }
 
+  /**
+   * Configures middleware for the application.
+   *
+   * This function sets up various middleware components used by the Express application,
+   * including CORS, JSON parsing, session management, and Passport.js initialization.
+   *
+   * @returns {void} This function does not return any value.
+   */
   private configureMiddleware(): void {
+    // Enable CORS with specified options
     this.app.use(cors(this.corsOptions));
+
+    // Parse incoming JSON requests
     this.app.use(express.json());
+
+    // Configure session management
     this.app.use(
       session({
         secret: process.env.SECRET_KEY as string,
@@ -36,91 +60,65 @@ class App {
         saveUninitialized: true,
       }),
     );
+
+    // Initialize Passport.js
     this.app.use(passport.initialize());
+
+    // Integrate Passport.js with session management
     this.app.use(passport.session());
   }
 
+  /**
+   * Configures the routes for the application.
+   *
+   * This function sets up various routes for the Express application, including root, resource-specific routes,
+   * token verification, Google OAuth authentication, and logout.
+   *
+   * @returns {void} This function does not return any value.
+   */
   private configureRoutes(): void {
-    this.app.get('/', (req: Request, res: Response) => {
-      res.json({ message: 'Welcome to Cleaning App API', version: '1.0.0' });
-    });
+    // Root route
+    this.app.get('/', root);
+
+    // Routes for different resources, protected by JWT authentication
     this.app.use('/users/', authenticateJWT, usersRouter);
-    this.app.use('/cleaners/', cleanersRouter);
-    this.app.use('/clients/', clientsRouter);
-    this.app.use('/events/', eventsRouter);
+    this.app.use('/cleaners/', authenticateJWT, cleanersRouter);
+    this.app.use('/clients/', authenticateJWT, clientsRouter);
+    this.app.use('/events/', authenticateJWT, eventsRouter);
 
-    this.app.use('/verify-token/', (req: Request, res: Response) => {
-      if (!req) {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
+    // Route for verifying tokens
+    this.app.use('/verify-token/', verifyToken);
 
-      const authHeader = req.headers['authorization'];
-
-      if (!authHeader) {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
-
-      const token = authHeader.split(' ')[1];
-
-      jwt.verify(
-        token,
-        process.env.JWT_SECRET as string,
-        (err: any, decoded: any) => {
-          if (err) {
-            return res.status(401).json({ message: 'Invalid token' });
-          }
-
-          return res.json({ isValid: true, user: decoded });
-        },
-      );
-    });
-
+    // Route for initiating Google OAuth authentication
     this.app.get(
       '/auth/google',
       passport.authenticate('google', { scope: ['profile', 'email'] }),
     );
 
+    // Route for handling Google OAuth callback
     this.app.get(
       '/auth/google/callback',
       passport.authenticate('google', {
-        failureRedirect: 'http://localhost:3000/error',
+        failureRedirect:
+          'http://localhost:3000/login?error=Authentication%20failed',
       }),
-      (req: Request, res: Response) => {
-        if (req.user) {
-          const user = req.user as any;
-          const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET as string,
-            { expiresIn: '1h' },
-          );
-
-          res.redirect(`http://localhost:3000/callback?token=${token}`);
-        } else {
-          res.status(401).json({ message: 'Authentication failed' });
-        }
-      },
+      googleCallback,
     );
 
-    this.app.get(
-      '/profile',
-      this.ensureAuthenticated,
-      (req: Request, res: Response) => {
-        res.send(`Hello`);
-      },
-    );
-
-    this.app.get(
-      '/logout',
-      (req: Request, res: Response, next: NextFunction) => {
-        req.logout((err) => {
-          if (err) return next(err);
-          res.redirect('/');
-        });
-      },
-    );
+    // Route for logging out
+    this.app.get('/logout', logout);
   }
 
+  /**
+   * Configures Passport.js authentication strategies and session management.
+   *
+   * This function sets up Passport.js to authenticate users using the Google OAuth strategy.
+   * It also configures session management by serializing and deserializing user information.
+   *
+   * @returns {void} This function does not return any value.
+   */
   private configurePassport(): void {
+    // Use GoogleStrategy for Passport.js authentication
     passport.use(
       new GoogleStrategy(
         {
@@ -128,55 +126,19 @@ class App {
           clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
           callbackURL: process.env.CALLBACK_URL as string,
         },
-        async (token, tokenSecret, profile, done) => {
-          try {
-            let user = await prisma.users.findFirst({
-              where: { id_google: profile.id },
-            });
-
-            if (!user && profile && profile.emails) {
-              user = await prisma.users.create({
-                data: {
-                  id_google: profile.id,
-                  email: profile.emails[0].value,
-                  name: profile.displayName,
-                  number: '',
-                  type: 'Admin',
-                  status: 'enable',
-                },
-              });
-            }
-
-            if (user) {
-              return done(null, user);
-            } else {
-              return done(null, false, { message: 'User creation failed' });
-            }
-          } catch (err) {
-            return done(err, false);
-          }
-        },
+        login, // Callback function for handling Google OAuth authentication
       ),
     );
 
+    // Serialize user information into the session
     passport.serializeUser((user, done) => {
       done(null, user);
     });
 
+    // Deserialize user information from the session
     passport.deserializeUser((obj, done) => {
       done(null, obj as false | Express.User | null | undefined);
     });
-  }
-
-  private ensureAuthenticated(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): void {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.redirect('/');
   }
 }
 

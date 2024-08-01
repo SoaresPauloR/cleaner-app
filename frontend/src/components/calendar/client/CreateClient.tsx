@@ -53,6 +53,7 @@ function CreateClient({ changeModal, clients, setClients }: Props) {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(newPost),
       },

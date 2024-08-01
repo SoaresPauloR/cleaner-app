@@ -20,8 +20,11 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
   return (
     <form className="flex flex-col gap-2">
       <div className="input-content">
-        <label htmlFor="name">Name</label>
+        <label htmlFor="name" className="required">
+          Name
+        </label>
         <input
+          required
           placeholder="Amanda..."
           type="text"
           className="input"
@@ -31,8 +34,11 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
         />
       </div>
       <div className="input-content">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email" className="required">
+          Email
+        </label>
         <input
+          required
           placeholder="email@email.com"
           type="email"
           className="input"
@@ -42,8 +48,11 @@ function FormCleaner({ post, setPost }: FormCleanerProp) {
         />
       </div>
       <div className="input-content">
-        <label htmlFor="number">Phone number</label>
+        <label htmlFor="number" className="required">
+          Phone number
+        </label>
         <input
+          required
           placeholder="9876 543210"
           type="text"
           className="input"

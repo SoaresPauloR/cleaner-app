@@ -1,10 +1,13 @@
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { FaArrowRightFromBracket } from 'react-icons/fa6';
 
 function LogoutButton({ isLoading }: { isLoading: () => void }) {
+  const route = useRouter();
+
   const handleLogout = async () => {
     localStorage.removeItem('token');
-    location.href = '/login';
+    route.push('/login');
     isLoading();
   };
 

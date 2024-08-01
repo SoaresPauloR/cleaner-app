@@ -34,12 +34,13 @@ function CreateCleaner({ changeModal, cleaners, setCleaners }: Props) {
   ) => {
     e.preventDefault();
     const rawResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users`,
+      `${process.env.NEXT_PUBLIC_API_URL}/cleaners`,
       {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify(post),
       },
